@@ -16,8 +16,31 @@ dot_width = .25 * distance_between_dots
 edge_width = .1 * distance_between_dots
 
 # Functions
+import numpy as np
+def convert_to_logical_pos(xycoords): 
+  grid_position = np.array(xycoords)
+  position = (grid_position - distance_between_dots/4)//(distance_between_dots/2)
+
+  type = False # Is it a row or a column?  Or False for neither.
+  logical_position = []
+  # Determine if the line clicked is a row or column
+  if position[1] % 2 == 0 and (position[0] - 1) % 2 == 0:
+    r = int((position[0] -1)//2) # Which row
+    c = int(position[1]//2) # Which column
+    logical_position = [r, c]
+    type = 'row'
+  elif position[0] % 2 == 0 and (position[1] -1) % 2 == 0: 
+    c = int((position[1] -1) // 2) # Column number
+    r = int(position[0] // 2) # Row number
+    logical_position = [r, c]
+    type = 'col'
+
+  return logical_position, type  
+
 def playerClick(event):
-  print("click occurred!")
+  xycoords = [event.x, event.y]
+  logical_position, valid_input = convert_to_logical_pos(xycoords)
+  print(logical_position, valid_input)
 
 def drawBoard(c):
   for i in range(number_of_dots): 
